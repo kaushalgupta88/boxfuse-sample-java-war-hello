@@ -1,5 +1,3 @@
 FROM tomcat:8.5.47-jdk8-openjdk
 COPY target/hello-1.0.war /usr/local/tomcat/webapps
-EXPOSE 8080
-ENTRYPOINT ["/usr/local/tomcat/bin/startup.sh"]
-CMD []
+ENTRYPOINT ["/usr/local/tomcat/bin/catalina.sh", "run"]
