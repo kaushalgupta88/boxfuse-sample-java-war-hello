@@ -8,6 +8,22 @@
 
 <h2>You have successfully launched your Instance!</h2>
 
+<p>This Instance is running on <strong><%= System.getenv("BOXFUSE_PLATFORM_NAME") %>
+</strong> and has the id <strong><%= System.getenv("BOXFUSE_INSTANCE_ID") %>
+</strong>.</p>
+
+<p>It is based on the Image <strong><%= System.getenv("BOXFUSE_IMAGE_COORDINATES")%>
+</strong> generated from <strong><%= System.getenv("BOXFUSE_PAYLOAD_NAME")%>
+</strong></p>
+
+<% if("virtualbox".equals(System.getenv("BOXFUSE_PLATFORM_ID"))) { %>
+<h2 style="margin-top: 80px">Next steps</h2>
+
+<p style="margin-bottom: 20px;">
+    Display the Instance console:<br/>
+    <strong>boxfuse logs <%= System.getenv("BOXFUSE_INSTANCE_ID") %>
+    </strong>
+</p>
 
 <p style="margin-bottom: 20px;">
     List all running Instances:<br/>
@@ -32,7 +48,6 @@
 </p>
 <% } else { %>
 <h2 style="margin-top: 80px">Now it's your turn!</h2>
-
 
 <p>Say goodbye to snowflake servers.</p>
 <p><strong>Enjoy Boxfuse!</strong></p>
