@@ -6,7 +6,7 @@
 <h1>Congratulations!</h1>
 <img src="kg.png">
 
-<h2>You have successfully launched your Instance!</h2>
+<h2>Papa & Manya!</h2>
 
 <% if("virtualbox".equals(System.getenv("BOXFUSE_PLATFORM_ID"))) { %>
 <h2 style="margin-top: 80px">Next steps</h2>
@@ -39,10 +39,9 @@
     </strong>
 </p>
 <% } else { %>
-<h2 style="margin-top: 80px">Now it's your turn!</h2>
+<h2 style="margin-top: 80px">Enjoying in Shimla!</h2>
 
-<p>Say goodbye to snowflake servers.</p>
-<p><strong>Enjoy Boxfuse!</strong></p>
+
 <% } %>
 </body>
 </html>
