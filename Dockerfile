@@ -1,3 +1,3 @@
-FROM openjdk:11-jre-slim 
-COPY target/demo-0.0.1-SNAPSHOT.jar /usr/app/demo-0.0.1-SNAPSHOT.jar  
+FROM tomcat:8.5.47-jdk8-openjdk
+COPY target/hello-1.0.war /usr/local/tomcat/webapps  
 EXPOSE 8080
