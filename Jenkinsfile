@@ -9,8 +9,6 @@ pipeline {
         image = "web-app"
         tag = getDockerTag()
         gitrepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
-        dockeruser = "kaushalgupta88"
-        dockerpass = "DockerHub7803"
         namespace = "dev"
     }
 
@@ -37,9 +35,11 @@ pipeline {
         stage('Docker push') {
             steps {
                 script {
-                    sh "docker login -u ${env.dockeruser} -p ${env.dockerpass}"
-                    sh "docker tag ${env.image}:${env.tag} ${env.dockeruser}/${env.image}:${env.tag}"
-                    sh "docker push ${env.dockeruser}/${env.image}:${env.tag}"
+                    withCredentials([usernamePassword(credentialsId: 'DockerHub-Credentials', passwordVariable: 'GitHubPass', usernameVariable: 'GitHubUsername')]) {
+                        sh "docker login -u ${GitHubUsername} -p ${GitHubPass}"
+                        sh "docker tag ${env.image}:${env.tag} ${env.dockeruser}/${env.image}:${env.tag}"
+                        sh "docker push ${env.dockeruser}/${env.image}:${env.tag}"
+                    }
                 }
             }
         }
