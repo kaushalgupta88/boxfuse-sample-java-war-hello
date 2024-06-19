@@ -9,8 +9,8 @@ pipeline {
         image = "web-app"
         tag = getDockerTag()
         gitrepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
-        gituser = "kaushalgupta88"
-        gitpass = "DockerHub7803"
+        dockeruser = "kaushalgupta88"
+        dockerpass = "DockerHub7803"
         namespace = "dev"
     }
 
@@ -37,23 +37,23 @@ pipeline {
         stage('Docker push') {
             steps {
                 script {
-                    sh "docker login -u ${env.gituser} -p ${env.gitpass}"
-                    sh "docker tag ${env.image}:${env.tag} ${env.gituser}/${env.image}:${env.tag}"
-                    sh "docker push ${env.gituser}/${env.image}:${env.tag}"
+                    sh "docker login -u ${env.dockeruser} -p ${env.dockerpass}"
+                    sh "docker tag ${env.image}:${env.tag} ${env.dockeruser}/${env.image}:${env.tag}"
+                    sh "docker push ${env.dockeruser}/${env.image}:${env.tag}"
                 }
             }
         }
         stage('Image tag substitution') {
             steps {
                 sh "chmod +x substitute-script.sh"
-                sh "./substitute-script.sh ${env.gituser}/${env.image}:${env.tag} pod-template.yaml > ${env.image}-pod.yaml"
+                sh "./substitute-script.sh ${env.dockeruser}/${env.image}:${env.tag} pod-template.yaml > ${env.image}-pod.yaml"
             }
         }
         // stage('deploy container locally') {
         //     steps {
         //         script {
         //             sh "docker rm -f webappcon || true'
-        //             sh "docker run -d --name webappcon ${env.gituser}/${env.image}:${env.tag} /bin/bash"
+        //             sh "docker run -d --name webappcon ${env.dockeruser}/${env.image}:${env.tag} /bin/bash"
         //         }
         //     }
         // }
@@ -69,7 +69,7 @@ pipeline {
                     
                     stage('deploy container to remote dcoker server') {
                         sshCommand remote: remote, command: "docker rm -f webappcon || true"
-                        sshCommand remote: remote, command: "docker run -itd --name webappcon -p 8080:8080 ${env.gituser}/${env.image}:${env.tag} /bin/bash"
+                        sshCommand remote: remote, command: "docker run -itd --name webappcon -p 8080:8080 ${env.dockeruser}/${env.image}:${env.tag} /bin/bash"
                     }
                 }
             }
