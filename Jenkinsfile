@@ -5,6 +5,10 @@ pipeline {
         maven 'Maven 3.9.6'
     }
 
+    environment {
+        image = 'web-app'
+    }
+
     stages {
         stage('Checkout SCM') {
             steps {
@@ -21,7 +25,7 @@ pipeline {
         stage('Docker build') {
             steps {
                 script {
-                    sh 'docker build -t web-app:v1 .'
+                    sh 'docker build -t ${env.image}:v1 .'
                 }
             }
         }
