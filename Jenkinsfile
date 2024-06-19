@@ -8,7 +8,7 @@ pipeline {
     environment {
         image = "web-app"
         gitrepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
-        remoterepo = "kaushalgupta88"
+        gituser = "kaushalgupta88"
     }
 
     stages {
@@ -34,9 +34,9 @@ pipeline {
         stage('Docker push') {
             steps {
                 script {
-                    sh "docker login -u kaushalgupta88 -p DockerHub7803"
-                    sh "docker tag ${env.image}:v1 kaushalgupta88/${env.image}:v1"
-                    sh "docker push kaushalgupta88/${env.image}:v1"
+                    sh "docker login -u ${env.gituser} -p DockerHub7803"
+                    sh "docker tag ${env.image}:v1 ${env.gituser}/${env.image}:v1"
+                    sh "docker push ${env.gituser}/${env.image}:v1"
                 }
             }
         }
@@ -50,7 +50,7 @@ pipeline {
         //     steps {
         //         script {
         //             sh "docker rm -f webappcon || true'
-        //             sh "docker run -d --name webappcon kaushalgupta88/${env.image}:v1 /bin/bash"
+        //             sh "docker run -d --name webappcon ${env.gituser}/${env.image}:v1 /bin/bash"
         //         }
         //     }
         // }
