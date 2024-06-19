@@ -7,14 +7,14 @@ pipeline {
 
     environment {
         image = "web-app"
-        git.repo = "kaushalgupta88"
-        remote.repo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
+        gitrepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
+        remoterepo = "kaushalgupta88"
     }
 
     stages {
         stage('Checkout SCM') {
             steps {
-                git "${env.remote.repo}"
+                git "${env.gitrepo}"
             }
         }
         stage('Maven Build') {
