@@ -7,9 +7,10 @@ pipeline {
 
     environment {
         image = "web-app"
-        tag = "v1"
+        tag = getDockerTag()
         gitrepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
         gituser = "kaushalgupta88"
+        gitpass = "DockerHub7803"
         namespace = "dev"
     }
 
@@ -36,7 +37,7 @@ pipeline {
         stage('Docker push') {
             steps {
                 script {
-                    sh "docker login -u ${env.gituser} -p DockerHub7803"
+                    sh "docker login -u ${env.gituser} -p ${env.gitpass}"
                     sh "docker tag ${env.image}:${env.tag} ${env.gituser}/${env.image}:${env.tag}"
                     sh "docker push ${env.gituser}/${env.image}:${env.tag}"
                 }
@@ -107,4 +108,9 @@ pipeline {
             echo 'build failed!'
         }
     }
+}
+
+def getDockerTag(){
+    def tag = sh script: 'git rev-parse HEAD', returnStdout: true
+    return tag
 }
