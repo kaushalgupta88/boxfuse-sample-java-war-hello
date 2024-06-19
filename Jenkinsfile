@@ -11,6 +11,9 @@ pipeline {
         gitRepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
         namespace = "dev"
         dockerRepo = "kaushalgupta88"
+        // sonarProjectKey = "your_project_key"
+        // sonarHostUrl = "http://192.168.1.100:9000"
+        // sonarTokenId = "SonarQube-Token"
     }
 
     stages {
@@ -26,6 +29,20 @@ pipeline {
                 }
             }
         }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         script {
+        //             withCredentials([string(credentialsId: env.sonarTokenId, variable: 'SONAR_TOKEN')]) {
+        //                 sh """
+        //                     mvn sonar:sonar \
+        //                     -Dsonar.projectKey=${env.sonarProjectKey} \
+        //                     -Dsonar.host.url=${env.sonarHostUrl} \
+        //                     -Dsonar.login=${SONAR_TOKEN}
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
         stage('Docker build') {
             steps {
                 script {
