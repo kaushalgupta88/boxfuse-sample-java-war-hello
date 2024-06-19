@@ -6,19 +6,19 @@ pipeline {
     }
 
     environment {
-        image = 'web-app'
+        image = "web-app"
     }
 
     stages {
         stage('Checkout SCM') {
             steps {
-                git 'https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git'
+                git "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
             }
         }
         stage('Maven Build') {
             steps {
                 script {
-                    sh 'mvn clean package'
+                    sh "mvn clean package"
                 }
             }
         }
@@ -47,7 +47,7 @@ pipeline {
         // stage('deploy container locally') {
         //     steps {
         //         script {
-        //             sh 'docker rm -f webappcon || true'
+        //             sh "docker rm -f webappcon || true'
         //             sh "docker run -d --name webappcon kaushalgupta88/${env.image}:v1 /bin/bash"
         //         }
         //     }
