@@ -47,7 +47,7 @@ pipeline {
         stage('Image tag substitution') {
             steps {
                 sh "chmod +x substitute-script.sh"
-                sh "./substitute-script.sh ${env.dockerRepo}/${env.image}:${env.tag} pod-template.yaml > ${env.image}-pod.yaml"
+                sh "./substitute-script.sh ${env.dockerRepo}/${env.image}:${env.tag} ${env.image}-pod pod-template.yaml > ${env.image}-pod.yaml"
             }
         }
         // stage('deploy container locally') {
@@ -77,27 +77,27 @@ pipeline {
                 }
             }
         }
-        // stage('SSH Into k8s Server') {
+        stage('SSH Into k8s Server') {
 
-        //     steps {
-        //         script {
-        //             def remote = [:]
-        //             remote.name = 'master'
-        //             remote.host = '192.168.1.27'
-        //             remote.user = 'kaushal'
-        //             remote.password = 'kaushal'
-        //             remote.allowAnyHosts = true
+            steps {
+                script {
+                    def remote = [:]
+                    remote.name = 'master'
+                    remote.host = '192.168.1.27'
+                    remote.user = 'kaushal'
+                    remote.password = 'kaushal'
+                    remote.allowAnyHosts = true
 
-        //             stage('Put yaml onto k8s master') {
-        //                 sshPut remote: remote, from: 'web-app-pod.yaml', into: '.'
-        //             }
+                    stage('Put yaml onto k8s master') {
+                        sshPut remote: remote, from: "${env.image}-pod.yaml", into: '.'
+                    }
 
-        //             stage('Deploy yaml to k8s') {
-        //                 sshCommand remote: remote, command: "kubectl apply -f ${env.image}-pod.yaml -n ${env.namespace}"
-        //             }
-        //         }
-        //     }
-        // }
+                    stage('Deploy yaml to k8s') {
+                        sshCommand remote: remote, command: "kubectl apply -f ${env.image}-pod.yaml -n ${env.namespace}"
+                    }
+                }
+            }
+        }
     }
 
     post {

@@ -1,1 +1,1 @@
-sed 's|image_tag|'$1'|g' $2
+sed -e 's|image-tag|'$1'|g' -e 's|pod-name|'$2'|g' $3
