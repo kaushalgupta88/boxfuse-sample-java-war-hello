@@ -7,8 +7,10 @@ pipeline {
 
     environment {
         image = "web-app"
+        tag = "v1"
         gitrepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
         gituser = "kaushalgupta88"
+        namespace = "dev"
     }
 
     stages {
@@ -27,7 +29,7 @@ pipeline {
         stage('Docker build') {
             steps {
                 script {
-                    sh "docker build -t ${env.image}:v1 ."
+                    sh "docker build -t ${env.image}:${env.tag} ."
                 }
             }
         }
@@ -35,22 +37,22 @@ pipeline {
             steps {
                 script {
                     sh "docker login -u ${env.gituser} -p DockerHub7803"
-                    sh "docker tag ${env.image}:v1 ${env.gituser}/${env.image}:v1"
-                    sh "docker push ${env.gituser}/${env.image}:v1"
+                    sh "docker tag ${env.image}:${env.tag} ${env.gituser}/${env.image}:${env.tag}"
+                    sh "docker push ${env.gituser}/${env.image}:${env.tag}"
                 }
             }
         }
         stage('Image tag substitution') {
             steps {
                 sh "chmod +x substitute-script.sh"
-                sh "./substitute-script.sh ${env.gituser}/${env.image}:v1 pod-template.yaml > ${env.image}-pod.yaml"
+                sh "./substitute-script.sh ${env.gituser}/${env.image}:${env.tag} pod-template.yaml > ${env.image}-pod.yaml"
             }
         }
         // stage('deploy container locally') {
         //     steps {
         //         script {
         //             sh "docker rm -f webappcon || true'
-        //             sh "docker run -d --name webappcon ${env.gituser}/${env.image}:v1 /bin/bash"
+        //             sh "docker run -d --name webappcon ${env.gituser}/${env.image}:${env.tag} /bin/bash"
         //         }
         //     }
         // }
@@ -66,7 +68,7 @@ pipeline {
                     
                     stage('deploy container to remote dcoker server') {
                         sshCommand remote: remote, command: "docker rm -f webappcon || true"
-                        sshCommand remote: remote, command: "docker run -itd --name webappcon -p 8080:8080 kaushalgupta88/${env.image}:v1 /bin/bash"
+                        sshCommand remote: remote, command: "docker run -itd --name webappcon -p 8080:8080 ${env.gituser}/${env.image}:${env.tag} /bin/bash"
                     }
                 }
             }
@@ -87,7 +89,7 @@ pipeline {
         //             }
 
         //             stage('Deploy yaml to k8s') {
-        //                 sshCommand remote: remote, command: "kubectl apply -f web-app-pod.yaml -n dev"
+        //                 sshCommand remote: remote, command: "kubectl apply -f ${env.image}-pod.yaml -n ${env.namespace}"
         //             }
         //         }
         //     }
