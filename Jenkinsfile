@@ -32,23 +32,23 @@ pipeline {
         stage('Docker push') {
             steps {
                 script {
-                    sh 'docker login -u kaushalgupta88 -p DockerHub7803'
-                    sh 'docker tag web-app:v1 kaushalgupta88/web-app:v1'
-                    sh 'docker push kaushalgupta88/web-app:v1'
+                    sh "docker login -u kaushalgupta88 -p DockerHub7803"
+                    sh "docker tag ${env.image}:v1 kaushalgupta88/${env.image}:v1"
+                    sh "docker push kaushalgupta88/${env.image}:v1"
                 }
             }
         }
         stage('Image tag substitution') {
             steps {
                 sh 'chmod +x substitute-script.sh'
-                sh './substitute-script.sh kaushalgupta88/web-app:v1 pod-template.yaml > web-app-pod.yaml'
+                sh "./substitute-script.sh kaushalgupta88/${env.image}:v1 pod-template.yaml > web-app-pod.yaml"
             }
         }
         // stage('deploy container locally') {
         //     steps {
         //         script {
         //             sh 'docker rm -f webappcon || true'
-        //             sh 'docker run -d --name webappcon kaushalgupta88/web-app:v1 /bin/bash'
+        //             sh "docker run -d --name webappcon kaushalgupta88/${env.image}:v1 /bin/bash"
         //         }
         //     }
         // }
@@ -64,7 +64,7 @@ pipeline {
                     
                     stage('deploy container to remote dcoker server') {
                         sshCommand remote: remote, command: "docker rm -f webappcon || true"
-                        sshCommand remote: remote, command: "docker run -itd --name webappcon -p 8080:8080 kaushalgupta88/web-app:v1 /bin/bash"
+                        sshCommand remote: remote, command: "docker run -itd --name webappcon -p 8080:8080 kaushalgupta88/${env.image}:v1 /bin/bash"
                     }
                 }
             }
