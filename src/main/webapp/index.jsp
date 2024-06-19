@@ -3,7 +3,7 @@
     <title>Boxfuse Sample App: success!</title>
 </head>
 <body style="text-align: center">
-<h1>Many Many Congratulations!</h1>
+<h1>Many Many Many Congratulations!</h1>
 <img src="kg.png">
 
 <h2>Papa & Manya!</h2>
