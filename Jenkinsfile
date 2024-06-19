@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        image = "web-app"
+        image = "tomcat-app"
         tag = getDockerTag()
         gitRepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
         namespace = "dev"
