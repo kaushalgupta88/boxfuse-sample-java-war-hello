@@ -43,7 +43,7 @@ pipeline {
         stage('Image tag substitution') {
             steps {
                 sh "chmod +x substitute-script.sh"
-                sh "./substitute-script.sh kaushalgupta88/${env.image}:v1 pod-template.yaml > web-app-pod.yaml"
+                sh "./substitute-script.sh ${env.gituser}/${env.image}:v1 pod-template.yaml > ${env.image}-pod.yaml"
             }
         }
         // stage('deploy container locally') {
