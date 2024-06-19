@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     tools {
-        maven 'Maven 3.9.6'
+        maven "Maven 3.9.6"
     }
 
     environment {
@@ -40,7 +40,7 @@ pipeline {
         }
         stage('Image tag substitution') {
             steps {
-                sh 'chmod +x substitute-script.sh'
+                sh "chmod +x substitute-script.sh"
                 sh "./substitute-script.sh kaushalgupta88/${env.image}:v1 pod-template.yaml > web-app-pod.yaml"
             }
         }
