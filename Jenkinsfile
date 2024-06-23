@@ -11,6 +11,10 @@ pipeline {
         gitRepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
         namespace = "dev"
         dockerRepo = "kaushalgupta88"
+        SONARQUBE_SERVER = 'SonarQubeServer'
+        SONARQUBE_CREDENTIALS = 'squ_eb0f628882cb7fb1719fc26b0fa4741ea568e4fc'
+        SONAR_HOST_URL = 'http://192.168.1.26:9000'
+        SONAR_PROJECT_KEY = 'boxfuse'
         // sonarProjectKey = "your_project_key"
         // sonarHostUrl = "http://192.168.1.100:9000"
         // sonarTokenId = "SonarQube-Token"
@@ -29,6 +33,13 @@ pipeline {
                 }
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQubeServer') {
+                    sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONARQUBE_CREDENTIALS'
+                }
+            }
+        }
         // stage('SonarQube Analysis') {
         //     steps {
         //         script {
@@ -43,6 +54,21 @@ pipeline {
         //         }
         //     }
         // }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    script {
+                        def qg = waitForQualityGate()
+                        echo "Quality Gate Status: ${qg.status}"
+                        echo "Quality Gate Details: ${qg}"
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+    }
         stage('Docker build') {
             steps {
                 script {
