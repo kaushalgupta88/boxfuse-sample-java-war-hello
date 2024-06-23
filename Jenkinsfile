@@ -68,7 +68,7 @@ pipeline {
                 }
             }
         }
-    }
+        
         stage('Docker build') {
             steps {
                 script {
@@ -112,16 +112,15 @@ pipeline {
                         remote.password = "${SSH_PASSWORD}"
                         remote.allowAnyHosts = true
                     
-                    stage('deploy container to remote dcoker server') {
-                        sshCommand remote: remote, command: "docker rm -f webappcon || true"
-                        sshCommand remote: remote, command: "docker run -itd --name webappcon -p 8080:8080 ${env.dockerRepo}/${env.image}:${env.tag} /bin/bash"
+                        stage('deploy container to remote dcoker server') {
+                            sshCommand remote: remote, command: "docker rm -f webappcon || true"
+                            sshCommand remote: remote, command: "docker run -itd --name webappcon -p 8080:8080 ${env.dockerRepo}/${env.image}:${env.tag} /bin/bash"
                         }
                     }
                 }
             }
         }
         stage('SSH Into k8s Server') {
-
             steps {
                 script {
                     def remote = [:]
