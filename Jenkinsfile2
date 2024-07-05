@@ -11,10 +11,12 @@ pipeline {
         gitRepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
         namespace = "dev"
         dockerRepo = "kaushalgupta88"
-        SONARQUBE_SERVER = 'SonarQubeServer'
-        SONARQUBE_CREDENTIALS = 'squ_eb0f628882cb7fb1719fc26b0fa4741ea568e4fc'
-        SONAR_HOST_URL = 'http://192.168.1.26:9000'
-        SONAR_PROJECT_KEY = 'boxfuse'
+
+        // SONARQUBE_SERVER = 'SonarQubeServer'
+        // SONARQUBE_CREDENTIALS = 'squ_eb0f628882cb7fb1719fc26b0fa4741ea568e4fc'
+        // SONAR_HOST_URL = 'http://192.168.1.26:9000'
+        // SONAR_PROJECT_KEY = 'boxfuse'
+        
         // sonarProjectKey = "your_project_key"
         // sonarHostUrl = "http://192.168.1.100:9000"
         // sonarTokenId = "SonarQube-Token"
@@ -57,7 +59,7 @@ pipeline {
                 sh "./substitute-script.sh ${env.dockerRepo}/${env.image}:${env.tag} ${env.image}-pod pod-template.yaml > ${env.image}-pod.yaml"
             }
         }
-        stage('SSH Into k8s Server') {
+        stage('SSH Into ansible Server') {
             steps {
                 script {
                     def remote = [:]
