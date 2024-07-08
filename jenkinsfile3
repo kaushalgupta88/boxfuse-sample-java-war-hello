@@ -1,0 +1,100 @@
+pipeline {
+    agent any
+    
+    tools {
+        maven "Maven 3.9.6"
+    }
+
+    environment {
+        image = "tomcat-app"
+        tag = getDockerTag()
+        gitRepo = "https://github.com/kaushalgupta88/boxfuse-sample-java-war-hello.git"
+        namespace = "dev"
+        dockerRepo = "kaushalgupta88"
+
+        // SONARQUBE_SERVER = 'SonarQubeServer'
+        // SONARQUBE_CREDENTIALS = 'squ_eb0f628882cb7fb1719fc26b0fa4741ea568e4fc'
+        // SONAR_HOST_URL = 'http://192.168.1.26:9000'
+        // SONAR_PROJECT_KEY = 'boxfuse'
+        
+        // sonarProjectKey = "your_project_key"
+        // sonarHostUrl = "http://192.168.1.100:9000"
+        // sonarTokenId = "SonarQube-Token"
+    }
+
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                git "${env.gitRepo}"
+            }
+        }
+        stage('Maven Build') {
+            steps {
+                script {
+                    sh "mvn clean package"
+                }
+            }
+        }     
+        stage('Docker build') {
+            steps {
+                script {
+                    sh "docker build -t ${env.image}:${env.tag} ."
+                }
+            }
+        }
+        stage('Docker push') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'DockerHub-Credentials', passwordVariable: 'DockerHubPass', usernameVariable: 'DockerHubUser')]) {
+                        sh "docker login -u ${DockerHubUser} -p ${DockerHubPass}"
+                        sh "docker tag ${env.image}:${env.tag} ${env.dockerRepo}/${env.image}:${env.tag}"
+                        sh "docker push ${env.dockerRepo}/${env.image}:${env.tag}"
+                    }
+                }
+            }
+        }
+        stage('Image tag substitution') {
+            steps {
+                sh "chmod +x substitute-script.sh"
+                sh "./substitute-script.sh ${env.dockerRepo}/${env.image}:${env.tag} ${env.image}-pod pod-template.yaml > ${env.image}-pod.yaml"
+            }
+        }
+        stage('SSH Into ansible Server') {
+            steps {
+                script {
+                    def remote = [:]
+                    remote.name = 'ansibleserver'
+                    remote.host = '192.168.1.8'
+                    remote.user = 'ansible'
+                    remote.password = 'ansible'
+                    remote.allowAnyHosts = true
+
+                    stage('Put yaml onto ansible server') {
+                        sshPut remote: remote, from: "${env.image}-pod.yaml", into: '.'
+                    }
+
+                    stage('Deploy yaml to k8s using playbook') {
+                        sshCommand remote: remote, command: "ansible-playbook /home/ansible/playbook1.yaml"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+        success {
+            echo 'build successful!'
+        }
+        failure {
+            echo 'build failed!'
+        }
+    }
+}
+
+def getDockerTag(){
+    def tag = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+    return tag.take(8)
+}
