@@ -15,6 +15,7 @@ pipeline {
         SONARQUBE_CREDENTIALS = 'squ_eb0f628882cb7fb1719fc26b0fa4741ea568e4fc'
         SONAR_HOST_URL = 'http://192.168.1.26:9000'
         SONAR_PROJECT_KEY = 'boxfuse'
+        
         // sonarProjectKey = "your_project_key"
         // sonarHostUrl = "http://192.168.1.100:9000"
         // sonarTokenId = "SonarQube-Token"
