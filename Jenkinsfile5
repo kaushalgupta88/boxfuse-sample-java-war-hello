@@ -1,0 +1,21 @@
+pipeline {
+    agent {
+        kubernetes {
+            label 'jenkins-agent'
+        }
+    }
+    stages {
+        stage('Print Maven Version') {
+            steps {
+                container('maven') {
+                    sh 'mvn --version'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+    }
+}
